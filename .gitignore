@@ -45,7 +45,6 @@ amplify/backend/amplify-meta.json
 amplify/backend/awscloudformation
 amplify/backend/.temp
 dist/
-aws-exports.js
 awsconfiguration.json
 amplifyconfiguration.json
 amplifyconfiguration.dart
@@ -64,7 +63,6 @@ amplify/backend/.temp
 build/
 dist/
 node_modules/
-aws-exports.js
 awsconfiguration.json
 amplifyconfiguration.json
 amplifyconfiguration.dart
