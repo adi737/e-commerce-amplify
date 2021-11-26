@@ -3,6 +3,7 @@ import { InferGetStaticPropsType } from "next";
 import awsExports from "../aws-exports";
 import { listPosts } from "../graphql/queries";
 import { ListPostsQuery } from "../API";
+import { Typography } from "@mui/material";
 
 Amplify.configure({ ...awsExports, ssr: true });
 
@@ -54,15 +55,10 @@ export default function Home({
             marginLeft: "15px",
           }}
         >
-          <h2
-            style={{
-              marginTop: "40px",
-              textDecoration: "underline",
-            }}
-          >
+          <Typography mt={2} variant="h4">
             {post.title}
-          </h2>
-          <p>{post.content}</p>
+          </Typography>
+          <Typography variant="subtitle1">{post.content}</Typography>
         </div>
       ))}
     </div>
