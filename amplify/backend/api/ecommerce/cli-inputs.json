@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "serviceName": "AppSync",
+    "defaultAuthType": {
+      "mode": "API_KEY",
+      "expirationTime": 7,
+      "apiKeyExpirationDate": "2021-12-03T13:05:34.297Z",
+      "keyDescription": ""
+    },
+    "additionalAuthTypes": [
+      {
+        "mode": "AMAZON_COGNITO_USER_POOLS",
+        "cognitoUserPoolId": "authecommercefbfa9a46"
+      }
+    ],
+    "conflictResolution": {},
+    "apiName": "ecommerce",
+    "gqlSchemaPath": "C:\\Projects\\e-commerce\\amplify\\backend\\api\\ecommerce\\schema.graphql"
+  }
+}
