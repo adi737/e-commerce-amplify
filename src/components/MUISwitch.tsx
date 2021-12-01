@@ -4,7 +4,9 @@ import { useSwitch, UseSwitchProps } from "@mui/base/SwitchUnstyled";
 
 const SwitchRoot = styled("span")`
   display: inline-block;
-  position: relative;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
   width: 62px;
   height: 34px;
   padding: 7px;

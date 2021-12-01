@@ -15,5 +15,9 @@ export type AmplifyDependentResourcesAttributes = {
       AppClientIDWeb: "string";
       AppClientID: "string";
     };
+    userPoolGroups: {
+      adminsGroupRole: "string";
+      usersGroupRole: "string";
+    };
   };
 };
