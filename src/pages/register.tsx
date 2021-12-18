@@ -1,12 +1,13 @@
-import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import { Container, Stack, Button, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 
 type Inputs = {
   email: string;
   password: string;
+  repassword: string;
 };
 
 const schema = yup
@@ -20,12 +21,13 @@ const schema = yup
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
         "password must contain at least 1 lowercase, 1 uppercase, 1 numeric and 1 special character"
       ),
+    repassword: yup
+      .string()
+      .oneOf([yup.ref("password")], "Passwords must match"),
   })
   .required();
 
-//
-
-const Login = () => {
+const Register = () => {
   const {
     register,
     handleSubmit,
@@ -71,6 +73,16 @@ const Login = () => {
             helperText={errors.password ? errors.password.message : null}
           />
 
+          <TextField
+            {...register("repassword")}
+            variant="outlined"
+            label="Confirm password"
+            required
+            type="password"
+            error={!!errors.repassword}
+            helperText={errors.repassword ? errors.repassword.message : null}
+          />
+
           <Button
             type="submit"
             variant="outlined"
@@ -78,7 +90,7 @@ const Login = () => {
               marginBottom: "20px",
             }}
           >
-            Sign in
+            Sign up
           </Button>
         </Stack>
       </Box>
@@ -86,4 +98,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

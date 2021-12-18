@@ -3,11 +3,15 @@ import { AppProps } from "next/app";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { CacheProvider, EmotionCache } from "@emotion/react";
+import awsExports from "../aws-exports";
 import theme from "../utils/theme";
 import createEmotionCache from "../utils/createEmotionCache";
 import { MUISwitch } from "../components/MUISwitch";
 import { useEffect, useState } from "react";
 import { createTheme } from "@mui/material/styles";
+import Amplify from "aws-amplify";
+
+Amplify.configure({ ...awsExports, ssr: true });
 
 const clientSideEmotionCache = createEmotionCache();
 

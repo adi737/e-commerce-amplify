@@ -1,11 +1,9 @@
-import { Amplify, API } from "aws-amplify";
+import { API } from "aws-amplify";
 import { InferGetStaticPropsType } from "next";
-import awsExports from "../aws-exports";
+
 import { listPosts } from "../graphql/queries";
 import { ListPostsQuery } from "../API";
 import { Typography } from "@mui/material";
-
-Amplify.configure({ ...awsExports, ssr: true });
 
 export const getStaticProps = async () => {
   // const SSR = withSSRContext({ req });
