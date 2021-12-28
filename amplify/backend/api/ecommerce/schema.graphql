@@ -1,6 +1,11 @@
 type Post
   @model
-  @auth(rules: [{ allow: owner }, { allow: public, operations: [read] }]) {
+  @auth(
+    rules: [
+      { allow: public, operations: [read] }
+      { allow: groups, groups: ["admins"] }
+    ]
+  ) {
   id: ID!
   title: String!
   content: String!

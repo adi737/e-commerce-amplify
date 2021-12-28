@@ -4,8 +4,8 @@ import {
   Button,
   TextField,
   CircularProgress,
-  Link,
   Typography,
+  Link,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useForm } from "react-hook-form";
@@ -18,29 +18,16 @@ import NextLink from "next/link";
 
 type Inputs = {
   email: string;
-  password: string;
-  repassword: string;
 };
 
 const schema = yup
   .object({
     email: yup.string().email().required(),
-    password: yup
-      .string()
-      .required()
-      .min(8)
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-        "password must contain at least 1 lowercase, 1 uppercase, 1 numeric and 1 special character"
-      ),
-    repassword: yup
-      .string()
-      .oneOf([yup.ref("password")], "Passwords must match"),
   })
   .required();
 
-const Register = () => {
-  const [isLoading, setIsLoading] = useState(false);
+const SignUp = ({}) => {
+  const [isLoading, setisLoading] = useState(false);
   const { push } = useRouter();
   const {
     register,
@@ -53,19 +40,15 @@ const Register = () => {
 
   const handleOnSubmit = async (data: Inputs) => {
     try {
-      setIsLoading(true);
-      const { user } = await Auth.signUp({
-        username: data.email,
-        password: data.password,
-      });
-      const username = user.getUsername();
-      push(`/confirmAccount/${username}`);
+      setisLoading(true);
+      await Auth.resendSignUp(data.email);
+      push(`/confirmAccount/${data.email}`);
     } catch (error) {
-      console.error("error signing up:", error.message);
+      console.error("error resending code: ", error.message);
       if (error.message) {
         setError("email", { message: error.message });
       }
-      setIsLoading(false);
+      setisLoading(false);
     }
   };
 
@@ -87,7 +70,7 @@ const Register = () => {
             variant="outlined"
             label="Email adress"
             required
-            type="email"
+            type="text"
             error={!!errors.email}
             helperText={errors.email ? errors.email.message : null}
           />
@@ -97,31 +80,11 @@ const Register = () => {
               marginTop: "0.25rem",
             }}
           >
-            Already have an account?{" "}
-            <NextLink passHref href="/login">
-              <Link underline="none">Sign in</Link>
+            {`Don't have an account yet?`}{" "}
+            <NextLink passHref href="/register">
+              <Link underline="none">Sign up</Link>
             </NextLink>
           </Typography>
-
-          <TextField
-            {...register("password")}
-            variant="outlined"
-            label="Password"
-            required
-            type="password"
-            error={!!errors.password}
-            helperText={errors.password ? errors.password.message : null}
-          />
-
-          <TextField
-            {...register("repassword")}
-            variant="outlined"
-            label="Confirm password"
-            required
-            type="password"
-            error={!!errors.repassword}
-            helperText={errors.repassword ? errors.repassword.message : null}
-          />
 
           <Button
             type="submit"
@@ -130,7 +93,7 @@ const Register = () => {
               marginBottom: "20px",
             }}
           >
-            {isLoading ? <CircularProgress /> : "Sign up"}
+            {isLoading ? <CircularProgress /> : "Resend the verification code"}
           </Button>
         </Stack>
       </Box>
@@ -138,4 +101,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default SignUp;

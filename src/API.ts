@@ -62,7 +62,6 @@ export type Post = {
   content: string;
   createdAt: string;
   updatedAt: string;
-  owner?: string | null;
 };
 
 export type UpdatePostInput = {
@@ -119,7 +118,6 @@ export type CreatePostMutation = {
     content: string;
     createdAt: string;
     updatedAt: string;
-    owner?: string | null;
   } | null;
 };
 
@@ -136,7 +134,6 @@ export type UpdatePostMutation = {
     content: string;
     createdAt: string;
     updatedAt: string;
-    owner?: string | null;
   } | null;
 };
 
@@ -153,7 +150,6 @@ export type DeletePostMutation = {
     content: string;
     createdAt: string;
     updatedAt: string;
-    owner?: string | null;
   } | null;
 };
 
@@ -169,7 +165,6 @@ export type GetPostQuery = {
     content: string;
     createdAt: string;
     updatedAt: string;
-    owner?: string | null;
   } | null;
 };
 
@@ -189,14 +184,9 @@ export type ListPostsQuery = {
       content: string;
       createdAt: string;
       updatedAt: string;
-      owner?: string | null;
     }>;
     nextToken?: string | null;
   } | null;
-};
-
-export type OnCreatePostSubscriptionVariables = {
-  owner?: string | null;
 };
 
 export type OnCreatePostSubscription = {
@@ -207,12 +197,7 @@ export type OnCreatePostSubscription = {
     content: string;
     createdAt: string;
     updatedAt: string;
-    owner?: string | null;
   } | null;
-};
-
-export type OnUpdatePostSubscriptionVariables = {
-  owner?: string | null;
 };
 
 export type OnUpdatePostSubscription = {
@@ -223,12 +208,7 @@ export type OnUpdatePostSubscription = {
     content: string;
     createdAt: string;
     updatedAt: string;
-    owner?: string | null;
   } | null;
-};
-
-export type OnDeletePostSubscriptionVariables = {
-  owner?: string | null;
 };
 
 export type OnDeletePostSubscription = {
@@ -239,6 +219,5 @@ export type OnDeletePostSubscription = {
     content: string;
     createdAt: string;
     updatedAt: string;
-    owner?: string | null;
   } | null;
 };

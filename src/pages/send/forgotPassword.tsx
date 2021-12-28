@@ -1,42 +1,33 @@
-import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Container,
   Stack,
   Button,
   TextField,
-  Link,
-  Typography,
   CircularProgress,
+  Typography,
+  Link,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { Auth } from "aws-amplify";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import NextLink from "next/link";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Auth } from "aws-amplify";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import NextLink from "next/link";
 
 type Inputs = {
   email: string;
-  password: string;
 };
 
 const schema = yup
   .object({
     email: yup.string().email().required(),
-    password: yup
-      .string()
-      .required()
-      .min(8)
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-        "password must contain at least 1 lowercase, 1 uppercase, 1 numeric and 1 special character"
-      ),
   })
   .required();
 
-const Login = () => {
-  const [isLoading, setIsLoading] = useState(false);
+const ForgotPassword = () => {
+  const [isLoading, setisLoading] = useState(false);
   const { push } = useRouter();
   const {
     register,
@@ -49,18 +40,15 @@ const Login = () => {
 
   const handleOnSubmit = async (data: Inputs) => {
     try {
-      setIsLoading(true);
-      await Auth.signIn({
-        username: data.email,
-        password: data.password,
-      });
-      push("/");
+      setisLoading(true);
+      await Auth.forgotPassword(data.email);
+      push(`/confirmPassword/${data.email}`);
     } catch (error) {
-      console.error("error signing in", error.message);
+      console.error("error sending code: ", error.message);
       if (error.message) {
         setError("email", { message: error.message });
       }
-      setIsLoading(false);
+      setisLoading(false);
     }
   };
 
@@ -82,18 +70,19 @@ const Login = () => {
             variant="outlined"
             label="Email adress"
             required
-            type="email"
+            type="text"
             error={!!errors.email}
             helperText={
               errors.email ? (
-                errors.email.message === "User is not confirmed." ? (
+                errors.email.message ===
+                "Cannot reset password for the user as there is no registered/verified email or phone_number" ? (
                   <Typography
                     variant="caption"
                     style={{
                       marginTop: "0.25rem",
                     }}
                   >
-                    {errors.email.message}{" "}
+                    {errors.email.message}.{" "}
                     <NextLink passHref href="/send/signUp">
                       <Link>Resend the verification code</Link>
                     </NextLink>
@@ -116,27 +105,6 @@ const Login = () => {
             </NextLink>
           </Typography>
 
-          <TextField
-            {...register("password")}
-            variant="outlined"
-            label="Password"
-            required
-            type="password"
-            error={!!errors.password}
-            helperText={errors.password ? errors.password.message : null}
-          />
-          <Typography
-            variant="caption"
-            style={{
-              marginTop: "0.25rem",
-            }}
-          >
-            Forgot your password?{" "}
-            <NextLink passHref href="/send/forgotPassword">
-              <Link underline="none">Reset password</Link>
-            </NextLink>
-          </Typography>
-
           <Button
             type="submit"
             variant="outlined"
@@ -144,7 +112,7 @@ const Login = () => {
               marginBottom: "20px",
             }}
           >
-            {isLoading ? <CircularProgress /> : "Sign in"}
+            {isLoading ? <CircularProgress /> : "Send the verification code"}
           </Button>
         </Stack>
       </Box>
@@ -152,4 +120,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

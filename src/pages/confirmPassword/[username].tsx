@@ -1,29 +1,30 @@
-import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Container,
   Stack,
   Button,
   TextField,
-  Link,
-  Typography,
   CircularProgress,
+  Typography,
+  Link,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { Auth } from "aws-amplify";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import NextLink from "next/link";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Auth } from "aws-amplify";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import NextLink from "next/link";
 
 type Inputs = {
-  email: string;
+  code: string;
   password: string;
+  repassword: string;
 };
 
 const schema = yup
   .object({
-    email: yup.string().email().required(),
+    code: yup.string().required(),
     password: yup
       .string()
       .required()
@@ -32,12 +33,18 @@ const schema = yup
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
         "password must contain at least 1 lowercase, 1 uppercase, 1 numeric and 1 special character"
       ),
+    repassword: yup
+      .string()
+      .oneOf([yup.ref("password")], "Passwords must match"),
   })
   .required();
 
-const Login = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { push } = useRouter();
+const ConfirmPassword = ({}) => {
+  const [isLoading, setisLoading] = useState(false);
+  const {
+    push,
+    query: { username },
+  } = useRouter();
   const {
     register,
     handleSubmit,
@@ -49,18 +56,19 @@ const Login = () => {
 
   const handleOnSubmit = async (data: Inputs) => {
     try {
-      setIsLoading(true);
-      await Auth.signIn({
-        username: data.email,
-        password: data.password,
-      });
-      push("/");
+      setisLoading(true);
+      await Auth.forgotPasswordSubmit(
+        username as string,
+        data.code,
+        data.password
+      );
+      push("/login");
     } catch (error) {
-      console.error("error signing in", error.message);
+      console.error("error confirming password", error.message);
       if (error.message) {
-        setError("email", { message: error.message });
+        setError("code", { message: error.message });
       }
-      setIsLoading(false);
+      setisLoading(false);
     }
   };
 
@@ -76,33 +84,21 @@ const Login = () => {
       }}
     >
       <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
+        <Typography textAlign="center">
+          We have sent the verification code to
+        </Typography>
+        <Typography textAlign="center" fontWeight="bold" mb={2}>
+          {username}
+        </Typography>
         <Stack spacing={2}>
           <TextField
-            {...register("email")}
+            {...register("code")}
             variant="outlined"
-            label="Email adress"
+            label="Verification code"
             required
-            type="email"
-            error={!!errors.email}
-            helperText={
-              errors.email ? (
-                errors.email.message === "User is not confirmed." ? (
-                  <Typography
-                    variant="caption"
-                    style={{
-                      marginTop: "0.25rem",
-                    }}
-                  >
-                    {errors.email.message}{" "}
-                    <NextLink passHref href="/send/signUp">
-                      <Link>Resend the verification code</Link>
-                    </NextLink>
-                  </Typography>
-                ) : (
-                  errors.email.message
-                )
-              ) : null
-            }
+            type="text"
+            error={!!errors.code}
+            helperText={errors.code ? errors.code.message : null}
           />
           <Typography
             variant="caption"
@@ -110,9 +106,8 @@ const Login = () => {
               marginTop: "0.25rem",
             }}
           >
-            {`Don't have an account yet?`}{" "}
-            <NextLink passHref href="/register">
-              <Link underline="none">Sign up</Link>
+            <NextLink passHref href="/send/forgotPassword">
+              <Link underline="none">Resend the verification code</Link>
             </NextLink>
           </Typography>
 
@@ -125,17 +120,16 @@ const Login = () => {
             error={!!errors.password}
             helperText={errors.password ? errors.password.message : null}
           />
-          <Typography
-            variant="caption"
-            style={{
-              marginTop: "0.25rem",
-            }}
-          >
-            Forgot your password?{" "}
-            <NextLink passHref href="/send/forgotPassword">
-              <Link underline="none">Reset password</Link>
-            </NextLink>
-          </Typography>
+
+          <TextField
+            {...register("repassword")}
+            variant="outlined"
+            label="Confirm password"
+            required
+            type="password"
+            error={!!errors.repassword}
+            helperText={errors.repassword ? errors.repassword.message : null}
+          />
 
           <Button
             type="submit"
@@ -144,7 +138,7 @@ const Login = () => {
               marginBottom: "20px",
             }}
           >
-            {isLoading ? <CircularProgress /> : "Sign in"}
+            {isLoading ? <CircularProgress /> : "Change password"}
           </Button>
         </Stack>
       </Box>
@@ -152,4 +146,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ConfirmPassword;
