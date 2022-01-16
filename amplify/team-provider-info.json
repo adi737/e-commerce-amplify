@@ -13,7 +13,8 @@
     },
     "categories": {
       "auth": {
-        "ecommercefbfa9a46": {}
+        "ecommercefbfa9a46": {},
+        "userPoolGroups": {}
       }
     }
   }
